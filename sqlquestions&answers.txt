@@ -1,0 +1,106 @@
+-Display first_name of all employees who start with ‘A’,’D’,’M’
+select first_name from employees where first_name like 'A%'or first_name like 'M%'or first_name like 'D%';
+
+--Write a query to display unique job_id from employees table
+select distinct(job_id) from employees;
+
+--Display the first_name, job and salary  for all employees whose job is salesman or clerk and whose salary is not equal to $2,500, $3500 or  $7000
+SELECT first_name, job_id, salary FROM employees WHERE job_id IN ('SA_MAN', 'PU_CLERK','SH_CLERK','ST_CLERK') and salary NOT IN(2500,3500,7000);
+
+--Display sysdate in the format ‘MONDAY,01 JUNE,2001’
+SELECT to_char(Sysdate,'DAY,DD MONTH,YYYY') AS td FROM dual;
+
+--For each employee, display the employee’s last name, and calculate the number of months between today and the date the employee was hired
+select last_name,hire_date,current_date,round(months_between(current_date,hire_date)) from employees;
+
+--Write a query to extract the YEAR from HIRE_DATE column of the EMPLOYEES table for those employees who work in department 10
+select hire_date,extract(year from hire_date) from employees where department_id=10;
+
+--Select first_name, last_name  and dep_id from employees and concate f_name and last_name with space.
+--Use below literal.
+--Ex steven king ‘has a department id is’ 90.
+select first_name,last_name,department_id,first_name||' '||last_name||' has a dept_id'||' is '|| department_id from employees  ;
+
+--Eliminate duplicate rows of job_id.
+select distinct(job_id) from employees;
+
+--Display all details of employee whose first_name ‘s 3rd character is ‘l’
+select * from employees where first_name like '__l%';
+
+--How many employees are there in each departments
+select count(e.employee_id), d.department_name from departments d 
+inner join employees e on d.department_id = e.department_id group by d.department_name; 
+
+--Find out departments having more than ten employees.
+select count(e.employee_id), d.department_name from departments d 
+inner join employees e on d.department_id = e.department_id group by d.department_name having  count(e.employee_id)>10;
+
+--List the employee details along with departments to which they belong.
+select e.first_name, e.last_name, e.EMAIL, e.PHONE_NUMBER, e.HIRE_DATE, e.SALARY, e.MANAGER_ID, d.department_name from employees e 
+join departments d on e.department_id = d.department_id; 
+
+--List the departments along with their location as full address.
+select d.department_name, l.location_id, l.street_address, l.postal_code, l.city, l.state_province, l.country_id from departments d 
+join locations l on d.location_id = l.location_id;
+
+--List the employees name along with their departments name and location address.
+select e.first_name||' '||e.last_name, d.department_name, l.location_id, l.street_address, l.postal_code, l.city, l.state_province, l.country_id from employees e join departments d 
+on e.department_id = d.department_id join locations l on d.location_id = l.location_id;
+
+--List the first_name,last_name,department id,department name and location id,country_id whose country_id is ‘US’
+select e.first_name,e.last_name,d.department_id,d.department_name,l.location_id,l.country_id from employees e 
+join departments d on e.department_id = d.department_id join locations l on d.location_id = l.location_id where country_id='US';
+
+--Display records of employees where hire_date is in a range of ‘01/06/2003’ to ‘01/06/2006’
+select hire_date from employees where hire_date between to_date('01/jun/2003','dd/mon/yyyy') and to_date('01/jun/2006','dd/mon/yyyy');
+
+
+--Display date after 3 days of hire_date.-----------------------------------------------------------------------
+select hire_date,adddate(hire_date,2) from employees;
+select hire_date,adddate(hire_date,+3) as 'new date' from employees;
+
+--Select first 3 characters of FIRST_NAME from EMPLOYEE
+select first_name,substr(first_name,1,3) from employees;
+
+--Get position of 'o' in name 'John' from employee table
+SELECT POSITION("o" IN "John") AS new; 
+
+--Get First_Name from employee table after replacing 'o' with '$'
+select first_name,replace(first_name,'o','$') from employees;
+
+--Get FIRST_NAME ,Joining year,Joining Month and Joining Date from employee table
+Select FIRST_NAME, to_char(hire_date,'YYYY') , to_char(hire_date,'Mon'), to_char(hire_date,'dd') from employees;
+
+--Get employee details from employee table whose joining year is “2013”.
+select hire_date from employees where to_char(hire_date,'yyyy') =2013;
+
+
+--Get employee details from employee table whose joining month is “January”
+select hire_date from employees where to_char(hire_date,'mm') = 1;
+
+--Get employee details from employee table who joined before January 1st 2013
+select * from employees where to_char(hire_date,'dd mm yyyy') < '2013-01-01';
+
+--Get Joining Date and Time from employee table
+select to_char(hire_date,'dd-mm-yy') as joining_date,to_char(hire_date,'HH:mi:ss') as joining_time from employees;
+
+--Get department,total salary with respect to a department from employee table.
+select department_id,sum(salary) as total from employees group by department_id;
+
+--Get department,no of employees in a department,total salary with respect to a department from employee table order by total salary descending
+select department_id,count(employee_id) as total_employees,sum(salary) as total_salary from employees group by department_id order by sum(salary) desc;
+
+--Get department wise average salary from employee table order by salary ascending
+select department_id,round(avg(salary)) as average_salary from employees group by department_id order by avg(salary) asc;
+
+--Get department wise maximum salary from employee table order by salary ascending
+select department_id,max(salary) as maxmimum_salary from employees group by department_id order by max(salary) asc;
+
+--Select department,total salary with respect to a department from employee table where total salary greater than 800000
+--order by Total_Salary descending
+select department_id,sum(salary) as total from employees group by department_id having sum(salary)>80000;
+
+--Select 2nd Highest salary from employee table
+select salary from employees order by salary desc LIMIT 1,1;
+select max(salary) from employees where salary <(select max(salary) from employees);
+
